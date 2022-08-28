@@ -5,14 +5,43 @@
 
 // Dependencies
 var http = require('http');
+var https = require('https');
 const { type } = require('os');
 var url = require('url');
 var StringDecoder = require('string_decoder').StringDecoder;
 var config = require('./config');
+var fs = require('fs');
 
-// The server should respond to all requests with a string
-var server = http.createServer(function(req,res){
+// Instantiate the HTTP server 
+var httpServer = http.createServer(function(req,res){
+    unifiedServer(req,res);
+});
 
+// Start the HTTP server
+httpServer.listen(config.httpPort,function(){
+    console.log("The server is listening on port "+config.httpPort+" in "+config.envName+" now");
+});
+
+
+// Instantiate the HTTPS server
+var httpsServerOptions = {
+    'key' : fs.readFileSync('./https/key.pem'),
+    'cert': fs.readFileSync('./https/cert.pem')
+};
+
+var httpsServer = https.createServer(httpsServerOptions,function(req,res){
+    unifiedServer(req,res);
+});
+
+// Start the HTTPS server
+httpsServer.listen(config.httpsPort,function(){
+    console.log("The server is listening on port "+config.httpsPort+" in "+config.envName+" now");
+});
+
+
+
+// All the server logic for both the http and https server
+var unifiedServer = function(req,res){
     // Get the URL and parse it 
     var parsedUrl = url.parse(req.url,true);
 
@@ -69,25 +98,8 @@ var server = http.createServer(function(req,res){
         // Log the request path
         console.log('Returning this response: ', statusCode, payloadString);
     });
-    
-
-
-
     });
-
-    // // Send the response
-    // res.end('Hello World\n');
-
-    // // Log the request path
-    // // console.log('Request received on path: '+ trimmedPath+ ' with method: '+method+'with these query string parameters: ',queryStringObject);
-    // console.log('Request received with these headers: ',headers);
-});
-
-
-// Start the server, have it listen on port 3000
-server.listen(config.port,function(){
-    console.log("The server is listening on port "+config.port+" in "+config.envName+" now");
-});
+};
 
 
 //  Define handlers
