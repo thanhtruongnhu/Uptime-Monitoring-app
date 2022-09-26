@@ -1,0 +1,1 @@
+{"check":{"id":"0roxr8vp6g7r3nutdp26","userPhone":"9023147335","protocol":"http","url":"facebook.com","method":"get","successCodes":[200,201,301],"timeoutSeconds":4,"state":"down","lastChecked":false},"outcome":{"error":false,"responseCode":301},"state":"up","alert":false,"time":1664223017324}
